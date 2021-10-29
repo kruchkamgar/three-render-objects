@@ -47,7 +47,8 @@ const three = window.THREE
 
 import { TrackballControls as ThreeTrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 import { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { FlyControls as ThreeFlyControls } from 'three/examples/jsm/controls/FlyControls.js';
+// import { FlyControls as ThreeFlyControls } from 'three/examples/jsm/controls/FlyControls.js';
+import { FlyControls as ThreeFlyControls } from '../../three.js/examples/jsm/controls/FlyControls.js';
 
 import { EffectComposer as ThreeEffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass as ThreeRenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
@@ -384,7 +385,7 @@ export default Kapsule({
       trackball: ThreeTrackballControls,
       orbit: ThreeOrbitControls,
       fly: ThreeFlyControls
-    }[controlType])(state.camera, state.renderer.domElement);
+    }[controlType])(state.camera, state.renderer.domElement, state);
 
     if (controlType === 'fly') {
       state.controls.movementSpeed = 300;
