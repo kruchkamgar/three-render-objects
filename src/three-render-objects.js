@@ -49,6 +49,7 @@ import { TrackballControls as ThreeTrackballControls } from 'three/examples/jsm/
 import { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 // import { FlyControls as ThreeFlyControls } from 'three/examples/jsm/controls/FlyControls.js';
 import { FlyControls as ThreeFlyControls } from '../../three.js/examples/jsm/controls/FlyControls.js';
+import cameraPosition from '../../src/lib/camera-position.js';
 
 import { EffectComposer as ThreeEffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass as ThreeRenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
@@ -68,7 +69,25 @@ export default Kapsule({
     onBackgroundImageLoaded: {},
     showNavInfo: { default: true },
     skyRadius: { default: 50000 },
-    objects: { default: [] },
+    objects: { default: [],
+      onChange(state){
+        // if(!state) return
+        /* set the starting node whenever the forceGraph's graphData changes */
+        if(state.currentNode) {
+          /* look for currentNode in nodes */
+          state.currentNode = state.objects[2].nodes.find(node=> node.id = state.currentNode.id)
+        } 
+        else {
+          /* use any top-level node */
+          const nodes = state.object[2].nodes
+          let currentNodeIndex = 0
+          for(let i =0; i< nodes.length; ++i) {
+            nodes[currentNodeIndex].level < nodes[i].level && (currentNodeIndex = i)
+          }
+          state.currentNode = nodes[currentNodeIndex]
+        } 
+      }
+    },
     enablePointerInteraction: {
       default: true,
       onChange(_, state) {
@@ -385,7 +404,7 @@ export default Kapsule({
       trackball: ThreeTrackballControls,
       orbit: ThreeOrbitControls,
       fly: ThreeFlyControls
-    }[controlType])(state.camera, state.renderer.domElement, state);
+    }[controlType])(state.camera, state.renderer.domElement, state, cameraPosition);
 
     if (controlType === 'fly') {
       state.controls.movementSpeed = 300;
