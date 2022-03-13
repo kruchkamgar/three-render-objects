@@ -78,6 +78,7 @@ export default Kapsule({
           state.currentNode = state.objects[2].nodes.find(node=> node.id = state.currentNode.id)
         } 
         else {
+          console.log('set state.currentNode')
           /* use any top-level node */
           const nodes = state.object[2].nodes
           let currentNodeIndex = 0
@@ -85,6 +86,7 @@ export default Kapsule({
             nodes[currentNodeIndex].level < nodes[i].level && (currentNodeIndex = i)
           }
           state.currentNode = nodes[currentNodeIndex]
+          console.log('initiate state.currentNode-- ', state.currentNode)
         } 
       }
     },
