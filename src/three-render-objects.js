@@ -69,21 +69,24 @@ export default Kapsule({
     onBackgroundImageLoaded: {},
     showNavInfo: { default: true },
     skyRadius: { default: 50000 },
-    objects: { default: [],
-      onChange(state){
+    currentNodes: { default: null },
+    objects: {
+      default: [],
+      onChange (_, state) {
         // if(!state) return
         /* set the starting node whenever the forceGraph's graphData changes */
-        if(state.currentNode) {
+        if (state.currentNode) {
           /* look for currentNode in nodes */
-          state.currentNode = state.objects[2].nodes.find(node=> node.id = state.currentNode.id)
-        } 
+          state.currentNode = state.objects[2].nodes.find(node => node.id = state.currentNode.id)
+          state.currentNode.color = "white"
+        }
         else {
           console.log('set state.currentNode')
-          /* use any top-level node */
-          const nodes = state.object[2].nodes
+          const nodes = state.objects[2].nodes
           let currentNodeIndex = 0
-          for(let i =0; i< nodes.length; ++i) {
-            nodes[currentNodeIndex].level < nodes[i].level && (currentNodeIndex = i)
+          /* find any top level node */
+          for (let i = 0; i < nodes.length; ++i) {
+            nodes[currentNodeIndex].level > nodes[i].level && (currentNodeIndex = i)
           }
           state.currentNode = nodes[currentNodeIndex]
           console.log('initiate state.currentNode-- ', state.currentNode)
