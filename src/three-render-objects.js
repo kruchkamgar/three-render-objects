@@ -200,7 +200,12 @@ export default Kapsule({
       }
 
       function setLookAt (lookAt) {
-        state.controls.target = new three.Vector3(lookAt.x, lookAt.y, lookAt.z);
+        const lookAtVect = new three.Vector3(lookAt.x, lookAt.y, lookAt.z);
+        if (state.controls.target) {
+          state.controls.target = lookAtVect;
+        } else { // Fly controls doesn't have target attribute
+          camera.lookAt(lookAtVect); // note: lookAt may be overridden by other controls in some cases
+        }
       }
 
       function getLookAt () {
@@ -351,7 +356,11 @@ export default Kapsule({
           // Move tooltip
           state.toolTipElem.style.top = `${state.pointerPos.y}px`;
           state.toolTipElem.style.left = `${state.pointerPos.x}px`;
-          state.toolTipElem.style.transform = `translate(-${state.pointerPos.x / state.width * 100}%, 21px)`; // adjust horizontal position to not exceed canvas boundaries
+          // adjust horizontal position to not exceed canvas boundaries
+          state.toolTipElem.style.transform = `translate(-${state.pointerPos.x / state.width * 100}%, ${
+            // flip to above if near bottom
+            state.height - state.pointerPos.y < 100 ? 'calc(-100% - 8px)' : '21px'
+            })`;
         }
 
         function getOffset (el) {
@@ -453,8 +462,8 @@ export default Kapsule({
   update (state, changedProps) {
     // resize canvas
     if (state.width && state.height && (changedProps.hasOwnProperty('width') || changedProps.hasOwnProperty('height'))) {
-      state.container.style.width = state.width;
-      state.container.style.height = state.height;
+      state.container.style.width = `${state.width}px`;
+      state.container.style.height = `${state.height}px`;
       [state.renderer, state.postProcessingComposer, ...state.extraRenderers]
         .forEach(r => r.setSize(state.width, state.height));
       state.camera.aspect = state.width / state.height;
